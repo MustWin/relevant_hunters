@@ -13,8 +13,8 @@ const (
 
 func GetCollection(id int) (producthunter.Collection, error) {
 	var coll producthunter.CollectionResponse
-
-	body, err := readGet(fmt.Sprintf("%s/v1/collections/%d", base_url, id))
+	base_request_url := fmt.Sprintf("%s/v1/collections/%d", base_url, id)
+	body, err := readGet(base_request_url)
 	if err != nil {
 		return coll.Collection, err
 	}
@@ -55,4 +55,20 @@ func GetPostVotes(postId int) ([]producthunter.Vote, error) {
 	}
 
 	return votes, nil
+}
+
+func GetUserDetails(userId int) (producthunter.User, error) {
+	var response producthunter.UserResponse
+	base_request_url := fmt.Sprintf("%s/v1/users/%d", base_url, userId)
+	body, err := readGet(base_request_url)
+	if err != nil {
+		return response.User, err
+	}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return response.User, err
+	}
+
+	return response.User, nil
 }

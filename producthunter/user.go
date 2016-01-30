@@ -1,5 +1,9 @@
 package producthunter
 
+type UserResponse struct {
+	User User `json:"user"`
+}
+
 type User struct {
 	Id          int               `json:"id"`
 	Name        string            `json:"name"`

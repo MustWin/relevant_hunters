@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/MustWin/relevant_hunters/producthunter"
 )
@@ -24,6 +26,11 @@ func readGet(link string) ([]byte, error) {
 		return []byte{}, err
 	}
 	defer response.Body.Close()
+
+	limit, _ := strconv.ParseInt(response.Header.Get("X-Rate-Limit-Limit"), 10, 32)
+	remaining, _ := strconv.ParseInt(response.Header.Get("X-Rate-Limit-Remaining"), 10, 32)
+	reset, _ := strconv.ParseInt(response.Header.Get("X-Rate-Limit-Reset"), 10, 32)
+	log.Printf("Request Limits: limit: %d, remaining: %d, til reset: %d\n", limit, remaining, reset)
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
