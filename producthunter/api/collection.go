@@ -19,10 +19,6 @@ func GetCollection(id int) (producthunter.Collection, error) {
 		return coll.Collection, err
 	}
 
-	if err = testForError(body); err != nil {
-		return coll.Collection, err
-	}
-
 	err = json.Unmarshal(body, &coll)
 	if err != nil {
 		return coll.Collection, err
@@ -31,16 +27,18 @@ func GetCollection(id int) (producthunter.Collection, error) {
 	return coll.Collection, nil
 }
 
-func testForError(body []byte) error {
-	var eo producthunter.ErrorResponse
-	err := json.Unmarshal(body, &eo)
+func GetPostVotes(postId int) ([]producthunter.Vote, error) {
+	var votes producthunter.VoteResponse
+
+	body, err := readGet(fmt.Sprintf("%s/v1/posts/%d/votes", base_url, postId))
 	if err != nil {
-		return err
+		return votes.Votes, err
 	}
 
-	if eo.Error != "" {
-		return fmt.Errorf("%s\n%s", eo.Error, eo.Description)
+	err = json.Unmarshal(body, &votes)
+	if err != nil {
+		return votes.Votes, err
 	}
 
-	return nil
+	return votes.Votes, nil
 }

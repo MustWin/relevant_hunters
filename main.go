@@ -15,4 +15,13 @@ func main() {
 	}
 
 	fmt.Fprintf(os.Stdout, "Collection:\n%+v\n", coll)
+
+	for _, post := range coll.Posts {
+		votes, err := api.GetPostVotes(post.Id)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			continue
+		}
+		fmt.Fprintf(os.Stdout, "%d votes\n", len(votes))
+	}
 }

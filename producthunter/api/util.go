@@ -1,9 +1,13 @@
 package api
 
 import (
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/MustWin/relevant_hunters/producthunter"
 )
 
 func readGet(link string) ([]byte, error) {
@@ -21,5 +25,28 @@ func readGet(link string) ([]byte, error) {
 	}
 	defer response.Body.Close()
 
-	return ioutil.ReadAll(response.Body)
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	if err = testForError(body); err != nil {
+		return []byte{}, err
+	}
+
+	return body, nil
+}
+
+func testForError(body []byte) error {
+	var eo producthunter.ErrorResponse
+	err := json.Unmarshal(body, &eo)
+	if err != nil {
+		return err
+	}
+
+	if eo.Error != "" {
+		return fmt.Errorf("%s\n%s", eo.Error, eo.Description)
+	}
+
+	return nil
 }
