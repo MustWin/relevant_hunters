@@ -22,6 +22,6 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			continue
 		}
-		fmt.Fprintf(os.Stdout, "%d votes\n", len(votes))
+		fmt.Fprintf(os.Stdout, "Post %q; %d(%d) votes\n", post.Name, post.VotesCount, len(votes))
 	}
 }
